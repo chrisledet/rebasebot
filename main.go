@@ -56,11 +56,6 @@ func main() {
 		}
 
 		log.Printf("server.tmpdir.cleanup.finished: %s\n", git.ParentDir())
-
-		for _, repository := range BotConfig.Repositories {
-			repoUrl := fmt.Sprintf("https://%s:%s@github.com/%s.git", BotConfig.Username, BotConfig.Password, repository)
-			git.Clone(repoUrl)
-		}
 	}()
 
 	log.Printf("server.up: 0.0.0.0:%s\n", port)
