@@ -1,5 +1,6 @@
 {
   "username": "rebasebot",
   "password": "1s0l33t",
-  "tmpdir": "tmp"
+  "tmpdir": "tmp",
+  "secret": ""
 }

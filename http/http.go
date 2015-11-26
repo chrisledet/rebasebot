@@ -1,8 +1,12 @@
 package http
 
 import (
+	"crypto/hmac"
+	"crypto/sha1"
+	"encoding/hex"
 	"encoding/json"
 	"fmt"
+	"io/ioutil"
 	"log"
 	"net/http"
 	"strings"
@@ -22,6 +26,37 @@ func Status(w http.ResponseWriter, r *http.Request) {
 	log.Printf("http.%s.response.sent: %d\n", event, http.StatusOK)
 }
 
+func isVerifiedRequest(requestSignature string, requestBody []byte) bool {
+	serverSignature := github.Signature()
+
+	// when not set up with a secret
+	if len(serverSignature) < 1 {
+		log.Println("http.request.signature.verification.skipped")
+		return true
+	}
+
+	log.Println("http.request.signature.verification.started")
+
+	if len(requestSignature) < 1 {
+		log.Println("http.request.signature.verification.failed", "missing X-Hub-Signature header")
+		return false
+	}
+
+	mac := hmac.New(sha1.New, []byte(serverSignature))
+	mac.Write(requestBody)
+	expectedMAC := mac.Sum(nil)
+	expectedSignature := "sha1=" + hex.EncodeToString(expectedMAC)
+	signatureMatched := hmac.Equal([]byte(expectedSignature), []byte(requestSignature))
+
+	if signatureMatched {
+		log.Println("http.request.signature.verification.passed")
+	} else {
+		log.Println("http.request.signature.verification.failed")
+	}
+
+	return signatureMatched
+}
+
 func Receive(w http.ResponseWriter, r *http.Request) {
 	var githubEvent github.Event
 	responseStatus := http.StatusOK
@@ -30,13 +65,27 @@ func Receive(w http.ResponseWriter, r *http.Request) {
 	log.Printf("http.request.%s.received: %s\n", event, r.RequestURI)
 
 	if r.Method != "POST" {
-		log.Printf("http.%s.response.sent: %d\n", event, responseStatus)
+		w.WriteHeader(http.StatusNotFound)
+		log.Printf("http.%s.response.sent: %d\n", event, http.StatusNotFound)
 		return
 	}
 
-	decoder := json.NewDecoder(r.Body)
-	if err := decoder.Decode(&githubEvent); err != nil {
-		responseStatus = http.StatusBadRequest
+	rawBody, err := ioutil.ReadAll(r.Body)
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		log.Printf("http.%s.response.sent: %d\n", event, http.StatusInternalServerError)
+		return
+	}
+
+	requestSignature := r.Header.Get("X-Hub-Signature")
+	if !isVerifiedRequest(requestSignature, rawBody) {
+		w.WriteHeader(http.StatusUnauthorized)
+		log.Printf("http.%s.response.sent: %d\n", event, http.StatusUnauthorized)
+		return
+	}
+
+	if err := json.Unmarshal(rawBody, &githubEvent); err != nil {
+		responseStatus = http.StatusInternalServerError
 		log.Printf("http.request.body.parse_failed: %s\n", err.Error())
 	}
 

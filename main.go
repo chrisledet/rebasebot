@@ -46,6 +46,7 @@ func main() {
 			git.SetParentDir(BotConfig.TmpDir)
 		}
 
+		github.SetSignature(BotConfig.Secret)
 		github.SetAuth(BotConfig.Username, BotConfig.Password)
 		git.SetAuth(BotConfig.Username, BotConfig.Password)
 
