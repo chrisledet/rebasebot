@@ -37,14 +37,18 @@ func Receive(w http.ResponseWriter, r *http.Request) {
 
 	if canRebase(githubEvent) {
 		go func() {
-			repositoryPath := git.GetRepositoryPath(githubEvent.Repository.Name)
-			// TODO: fetch from Github's PR API
-
-			branch := "newchanges"
-			baseBranch := "origin/master"
-
 			log.Println("bot.rebase.started")
 			defer log.Println("bot.rebase.finished")
+
+			repositoryPath := git.GetRepositoryPath(githubEvent.Repository.Name)
+			pullRequest := github.FindPR(githubEvent.Repository, githubEvent.Issue.Number)
+
+			if pullRequest.Number < 0 {
+				return
+			}
+
+			branch := pullRequest.Head.Ref
+			baseBranch := pullRequest.Base.Ref
 
 			git.Fetch(repositoryPath)
 			git.Checkout(repositoryPath, branch)

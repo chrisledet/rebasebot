@@ -8,6 +8,7 @@ import (
 
 	"github.com/chrisledet/rebaser/config"
 	"github.com/chrisledet/rebaser/git"
+	"github.com/chrisledet/rebaser/github"
 	_http "github.com/chrisledet/rebaser/http"
 )
 
@@ -45,6 +46,8 @@ func main() {
 		if len(BotConfig.TmpDir) > 0 {
 			git.SetParentDir(BotConfig.TmpDir)
 		}
+
+		github.SetAuth(BotConfig.Username, BotConfig.Password)
 
 		log.Printf("server.tmpdir.cleanup.started: %s\n", git.ParentDir())
 
