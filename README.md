@@ -1,8 +1,42 @@
-# rebase-bot
+# rebasebot
 
 A GitHub integration service that rebases your Pull request branches when you ask.
 
-1. Mention with "@rebase-bot Please rebase"
-2. Reviews pull request
-3. checkouts out PR branch and attempt to rebase with base branch
-4. if successful, git push then comments?
+## Setup
+
+Build
+
+```shell
+$ go build
+```
+
+Config
+
+```shell
+$ cp rebaser.json{.sample,}
+```
+
+Edit `rebaser.json` and enter a GitHub account and a list of repositories to checkout locally:
+
+```json
+{
+  "username": "rebaser",
+  "password": "1s0l33t",
+  "tmpdir": "tmp",
+  "repositories": [
+    "chrisledet/dotfiles"
+  ]
+}
+```
+
+Run
+
+```shell
+$ ./rebasebot
+```
+
+Test
+
+```shell
+$ go test ./...
+```
