@@ -13,14 +13,14 @@ $ go build
 Config
 
 ```shell
-$ cp rebaser.json{.sample,}
+$ cp rebasebot.json{.sample,}
 ```
 
-Edit `rebaser.json` and enter a GitHub account and a list of repositories to checkout locally:
+Edit `rebasebot.json` and enter a GitHub account and a list of repositories to checkout locally:
 
 ```json
 {
-  "username": "rebaser",
+  "username": "rebasebot",
   "password": "1s0l33t",
   "tmpdir": "tmp",
   "repositories": [

@@ -6,10 +6,10 @@ import (
 	"net/http"
 	"os"
 
-	"github.com/chrisledet/rebaser/config"
-	"github.com/chrisledet/rebaser/git"
-	"github.com/chrisledet/rebaser/github"
-	_http "github.com/chrisledet/rebaser/http"
+	"github.com/chrisledet/rebasebot/config"
+	"github.com/chrisledet/rebasebot/git"
+	"github.com/chrisledet/rebasebot/github"
+	_http "github.com/chrisledet/rebasebot/http"
 )
 
 var (
@@ -21,7 +21,7 @@ func main() {
 	http.HandleFunc("/status", _http.Status)
 
 	port := "8080"
-	configPath := "./rebaser.json"
+	configPath := "./rebasebot.json"
 
 	if len(os.Getenv("PORT")) > 0 {
 		port = os.Getenv("PORT")

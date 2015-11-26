@@ -7,8 +7,8 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/chrisledet/rebaser/git"
-	"github.com/chrisledet/rebaser/github"
+	"github.com/chrisledet/rebasebot/git"
+	"github.com/chrisledet/rebasebot/github"
 )
 
 func Status(w http.ResponseWriter, r *http.Request) {

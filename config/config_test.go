@@ -5,7 +5,7 @@ import (
 )
 
 func TestLoadFromPath(t *testing.T) {
-	config, err := LoadFromPath("../rebaser.json.sample")
+	config, err := LoadFromPath("../rebasebot.json.sample")
 
 	if err != nil {
 		t.Errorf("Error when loading file: %s", err.Error())
