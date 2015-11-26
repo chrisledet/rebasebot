@@ -47,6 +47,10 @@ Copy from `rebasebot.json.sample` and replace with your GitHub login
 $ cp rebasebot.json.sample rebasebot.json
 ```
 
+It's **strongly recommended** to use the `secret` config option for incoming requests from GitHub
+
+Read more about [securing your web hooks](https://developer.github.com/webhooks/securing/)
+
 ### Run
 
 Start rebasebot

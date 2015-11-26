@@ -13,8 +13,9 @@ const (
 )
 
 var (
-	username string
-	password string
+	username  string
+	password  string
+	signature string
 )
 
 func SetAuth(user string, pwd string) {
@@ -22,8 +23,16 @@ func SetAuth(user string, pwd string) {
 	password = pwd
 }
 
+func SetSignature(sign string) {
+	signature = sign
+}
+
 func Username() string {
 	return username
+}
+
+func Signature() string {
+	return signature
 }
 
 func FindPR(repo Repository, number int) PullRequest {
