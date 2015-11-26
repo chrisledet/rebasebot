@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"log"
 	"net/http"
 	"os"
@@ -37,7 +36,7 @@ func main() {
 		BotConfig, err := config.LoadFromPath(configPath)
 
 		if err != nil {
-			fmt.Printf("config.load.failed: %s\n", configPath)
+			log.Printf("config.load.failed: %s\n", configPath)
 			return
 		}
 
