@@ -1,66 +1,23 @@
 package main
 
 import (
-	"encoding/json"
 	"fmt"
 	"log"
 	"net/http"
 	"os"
-	"strings"
 
 	"github.com/chrisledet/rebaser/config"
 	"github.com/chrisledet/rebaser/git"
-	"github.com/chrisledet/rebaser/github"
+	_http "github.com/chrisledet/rebaser/http"
 )
 
 var (
 	BotConfig config.Config
 )
 
-func canRebase(e github.Event) bool {
-	return len(e.Repository.FullName) > 0
-}
-
 func main() {
-	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		var githubEvent github.Event
-		responseStatus := http.StatusOK
-		event := strings.ToLower(r.Method)
-
-		log.Printf("http.request.%s.received: %s\n", event, r.RequestURI)
-
-		decoder := json.NewDecoder(r.Body)
-		if err := decoder.Decode(&githubEvent); err != nil {
-			responseStatus = http.StatusBadRequest
-			log.Printf("http.request.body.parse_failed: %s\n", err.Error())
-		}
-
-		if canRebase(githubEvent) {
-			go func() {
-				repositoryPath := git.GetRepositoryPath(githubEvent.Repository.Name)
-				// TODO: fetch from Github's PR API
-				branch := "newchanges"
-				baseBranch := "origin/master"
-
-				log.Println("bot.rebase.started")
-				defer log.Println("bot.rebase.finished")
-
-				git.Fetch(repositoryPath)
-				git.Checkout(repositoryPath, branch)
-				git.Reset(repositoryPath, branch)
-				git.Rebase(repositoryPath, baseBranch)
-				git.Push(repositoryPath, branch)
-			}()
-		}
-
-		w.WriteHeader(responseStatus)
-		log.Printf("http.%s.response.sent: %d\n", event, responseStatus)
-	})
-
-	http.HandleFunc("/status", func(w http.ResponseWriter, r *http.Request) {
-		w.WriteHeader(http.StatusOK)
-		fmt.Fprintf(w, "OK\n")
-	})
+	http.HandleFunc("/", _http.Receive)
+	http.HandleFunc("/status", _http.Status)
 
 	port := "8080"
 	configPath := "./rebaser.json"
