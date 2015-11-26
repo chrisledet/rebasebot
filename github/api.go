@@ -22,6 +22,10 @@ func SetAuth(user string, pwd string) {
 	password = pwd
 }
 
+func Username() string {
+	return username
+}
+
 func FindPR(repo Repository, number int) PullRequest {
 	var pr PullRequest
 

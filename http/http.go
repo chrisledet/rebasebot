@@ -37,6 +37,10 @@ func Receive(w http.ResponseWriter, r *http.Request) {
 
 	if canRebase(githubEvent) {
 		go func() {
+			if !strings.Contains(githubEvent.Comment.Body, github.Username()) {
+				return
+			}
+
 			log.Println("bot.rebase.started")
 			defer log.Println("bot.rebase.finished")
 
