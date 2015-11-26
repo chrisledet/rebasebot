@@ -4,6 +4,12 @@ A GitHub integration service that rebases your Pull request branches when you as
 
 ## Setup
 
+Install
+
+```shell
+$ go get github.com/chrisledet/rebasebot
+```
+
 Build
 
 ```shell
