@@ -28,9 +28,9 @@ func Receive(w http.ResponseWriter, r *http.Request) {
 	event := strings.ToLower(r.Method)
 
 	log.Printf("http.request.%s.received: %s\n", event, r.RequestURI)
-	defer log.Printf("http.%s.response.sent: %d\n", event, responseStatus)
 
 	if r.Method != "POST" {
+		log.Printf("http.%s.response.sent: %d\n", event, responseStatus)
 		return
 	}
 
@@ -73,6 +73,7 @@ func Receive(w http.ResponseWriter, r *http.Request) {
 	}
 
 	w.WriteHeader(responseStatus)
+	log.Printf("http.%s.response.sent: %d\n", event, responseStatus)
 }
 
 func canRebase(e github.Event) bool {
