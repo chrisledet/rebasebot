@@ -2,6 +2,14 @@
 
 A GitHub integration service that rebases your Pull request branches when you ask
 
+## How it works
+
+1. Make a dedicated GitHub account for the bot
+2. Grant the GitHub account read and write access to your repositories
+3. [Setup](#setup) the bot on your own server
+4. **@mention** the bot in a pull request comment
+5. The bot will then kick off a rebase and push (if rebase successful) to your repository
+
 ## Dependencies
 
 * Dedicated host (e.g. EC2, Digital Ocean, Rackspace)
@@ -60,6 +68,8 @@ $ PORT=80 rebasebot
 ```
 
 ### Add GitHub Webhook
+
+This is a required step to complete the setup.
 
 1. Go into your GitHub repository's Webhooks and services page
 2. Add webhook
