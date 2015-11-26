@@ -25,7 +25,11 @@ func main() {
 	setup(configPath)
 
 	log.Printf("server.up: 0.0.0.0:%s\n", port)
-	http.ListenAndServe(":"+port, nil)
+
+	err := http.ListenAndServe(":"+port, nil)
+	if err != nil {
+		log.Fatalf("server.down: %s\n", err)
+	}
 }
 
 func setup(configPath string) {
