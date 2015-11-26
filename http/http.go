@@ -41,10 +41,10 @@ func Receive(w http.ResponseWriter, r *http.Request) {
 				return
 			}
 
-			log.Println("bot.rebase.started")
-			defer log.Println("bot.rebase.finished")
+			log.Printf("bot.rebase.started, name: %s\n", githubEvent.Repository.FullName)
+			defer log.Printf("bot.rebase.finished: %s\n", githubEvent.Repository.FullName)
 
-			repositoryPath := git.GetRepositoryPath(githubEvent.Repository.Name)
+			repositoryPath := git.GetRepositoryPath(githubEvent.Repository.FullName)
 			pullRequest := github.FindPR(githubEvent.Repository, githubEvent.Issue.Number)
 
 			if pullRequest.Number < 0 {
@@ -53,6 +53,11 @@ func Receive(w http.ResponseWriter, r *http.Request) {
 
 			branch := pullRequest.Head.Ref
 			baseBranch := pullRequest.Base.Ref
+			repoUrl := git.GenerateCloneUrl(githubEvent.Repository.FullName)
+
+			if !git.Exists(repositoryPath) {
+				git.Clone(repoUrl)
+			}
 
 			git.Fetch(repositoryPath)
 			git.Checkout(repositoryPath, branch)

@@ -47,6 +47,7 @@ func main() {
 		}
 
 		github.SetAuth(BotConfig.Username, BotConfig.Password)
+		git.SetAuth(BotConfig.Username, BotConfig.Password)
 
 		log.Printf("server.tmpdir.cleanup.started: %s\n", git.ParentDir())
 

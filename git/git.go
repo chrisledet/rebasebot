@@ -1,6 +1,7 @@
 package git
 
 import (
+	"fmt"
 	"log"
 	"os"
 	"os/exec"
@@ -10,6 +11,8 @@ import (
 
 var (
 	repoParentDir string
+	username      string
+	password      string
 )
 
 func init() {
@@ -24,6 +27,20 @@ func ParentDir() string {
 	return repoParentDir
 }
 
+func SetAuth(user string, pwd string) {
+	username = user
+	password = pwd
+}
+
+func GenerateCloneUrl(repositoryFullName string) string {
+	return fmt.Sprintf("https://%s:%s@github.com/%s.git", username, password, repositoryFullName)
+}
+
+func Exists(repositoryPath string) bool {
+	_, err := os.Stat(repositoryPath)
+	return !os.IsNotExist(err)
+}
+
 func GetRepositoryPath(name string) string {
 	return path.Join(repoParentDir, name)
 }
@@ -32,8 +49,9 @@ func GetRepositoryPath(name string) string {
 func Clone(repositoryUrl string) (string, error) {
 	urlSplit := strings.Split(repositoryUrl, "/")
 	repoNameWithExt := urlSplit[len(urlSplit)-1]
+	orgName := urlSplit[len(urlSplit)-2]
 	repoName := strings.Split(repoNameWithExt, ".")[0]
-	repositoryPath := path.Join(repoParentDir, repoName)
+	repositoryPath := path.Join(repoParentDir, orgName, repoName)
 
 	log.Println("git.clone.started:", repositoryPath)
 	defer log.Println("git.clone.finished:", repositoryPath)
