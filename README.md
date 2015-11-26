@@ -2,7 +2,7 @@
 
 A GitHub integration service that rebases your Pull request branches when you ask
 
-## Depedencies
+## Dependencies
 
 * Dedicated host (e.g. EC2, Digital Ocean, Rackspace)
 * Go version 1.5
