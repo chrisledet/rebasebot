@@ -13,7 +13,8 @@ A GitHub integration service that rebases your Pull request branches when you as
 ## Dependencies
 
 * Dedicated host (e.g. EC2, Digital Ocean, Rackspace)
-* Go version 1.5
+* Go 1.5
+* Git
 * Dedicated GitHub account
 
 ## Setup
@@ -41,15 +42,17 @@ $ go install
 
 ### Config
 
-Copy from `rebasebot.json.sample` and replace with your GitHub login
+Copy the sample config and update with it GitHub credentials in the `username` and `password` option
 
 ```shell
 $ cp rebasebot.json.sample rebasebot.json
 ```
 
-It's **strongly recommended** to use the `secret` config option for incoming requests from GitHub
+There are additional config options for further customize:
 
-Read more about [securing your web hooks](https://developer.github.com/webhooks/securing/)
+* `secret`: A token used to verify web hook requests from GitHub. It's **strongly recommended** that you use this option.
+
+* `port`: HTTP server port for the bot. Defaults to `8080`
 
 ### Run
 
@@ -59,17 +62,14 @@ Start rebasebot
 $ rebasebot
 ```
 
-if `rebasebot.json` isn't present in the current directory, you can specify its location
+By default, rebasebot will attempt to locate its config `rebasebot.json` in the current working directory
+
+If you wish to store it in another location, you can specify that path via `CONFIG` environment variable
 
 ```shell
 $ CONFIG=path/to/rebasebot.json rebasebot
 ```
 
-By default, rebasebot binds to port `8080` however you can use a different port
-
-```shell
-$ PORT=80 rebasebot
-```
 
 ### Add GitHub Webhook
 
@@ -77,6 +77,19 @@ This is a required step to complete the setup.
 
 1. Go into your GitHub repository's Webhooks and services page
 2. Add webhook
-  1. Enter your rebasebot's host public URL
-  2. Only send "Issue comment" events. All other ones will be ignored.
+  1. Enter your rebasebot's host public URL in the "Payload URL" field
+  2. Content type should be set to "application/json"
+  3. Generate a secret token and enter it in "Secret" field
+  4. Only send "Issue comment" events. All other ones will be ignored.
 3. GitHub should succesfully ping the service and receive a HTTP 200 OK
+
+
+## Resources
+
+* GitHub guide for [securing your webhooks](https://developer.github.com/webhooks/securing/)
+
+* Generate secret token with Ruby
+
+  ```shell
+  $ ruby -rsecurerandom -e 'puts SecureRandom.hex(20)'
+  ```

@@ -1,6 +1,7 @@
 {
   "username": "rebasebot",
   "password": "1s0l33t",
-  "tmpdir": "tmp",
-  "secret": ""
+  "port": "8080",
+  "secret": "",
+  "tmpdir": "tmp"
 }

@@ -22,6 +22,10 @@ func TestLoadFromPath(t *testing.T) {
 	if len(config.TmpDir) < 1 {
 		t.Error("config does not contain tmpdir")
 	}
+
+	if len(config.Port) < 1 {
+		t.Error("config does not contain port")
+	}
 }
 
 func TestConfigNotFound(t *testing.T) {

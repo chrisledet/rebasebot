@@ -139,3 +139,13 @@ func Push(repositoryPath, branch string) error {
 
 	return nil
 }
+
+func Clean() {
+	log.Printf("git.cache.cleanup.started: path: %s\n", repoParentDir)
+
+	if err := os.RemoveAll(repoParentDir); err != nil {
+		log.Fatalf("git.cache.cleanup.failed: path: %s, error: %s\n", repoParentDir, err.Error())
+	}
+
+	log.Printf("git.cache.cleanup.finished")
+}

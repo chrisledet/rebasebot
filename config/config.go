@@ -8,8 +8,9 @@ import (
 type Config struct {
 	Username string `json:"username"`
 	Password string `json:"password"`
-	TmpDir   string `json:"tmpdir"`
+	Port     string `json:"port"`
 	Secret   string `json:"secret"`
+	TmpDir   string `json:"tmpdir"`
 }
 
 func LoadFromPath(path string) (Config, error) {

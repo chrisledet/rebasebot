@@ -11,54 +11,45 @@ import (
 	_http "github.com/chrisledet/rebasebot/http"
 )
 
-var (
-	BotConfig config.Config
-)
+var port string = "8080"
+var configPath string = "./rebasebot.json"
 
 func main() {
 	http.HandleFunc("/", _http.Receive)
 	http.HandleFunc("/status", _http.Status)
 
-	port := "8080"
-	configPath := "./rebasebot.json"
-
-	if len(os.Getenv("PORT")) > 0 {
-		port = os.Getenv("PORT")
-	}
-
 	if len(os.Getenv("CONFIG")) > 0 {
 		configPath = os.Getenv("CONFIG")
 	}
 
-	go func() {
-		log.Printf("config.load.started: %s\n", configPath)
-
-		BotConfig, err := config.LoadFromPath(configPath)
-
-		if err != nil {
-			log.Printf("config.load.failed: %s\n", configPath)
-			return
-		}
-
-		log.Printf("config.load.finished: %s\n", configPath)
-
-		if len(BotConfig.TmpDir) > 0 {
-			git.SetParentDir(BotConfig.TmpDir)
-		}
-
-		github.SetSignature(BotConfig.Secret)
-		github.SetAuth(BotConfig.Username, BotConfig.Password)
-		git.SetAuth(BotConfig.Username, BotConfig.Password)
-
-		log.Printf("server.tmpdir.cleanup.started: %s\n", git.ParentDir())
-
-		if err := os.RemoveAll(git.ParentDir()); err != nil {
-			log.Fatalf("server.tmpdir.cleanup.failed: %s\n", err.Error())
-		}
-
-		log.Printf("server.tmpdir.cleanup.finished: %s\n", git.ParentDir())
-	}()
+	setup(configPath)
 
 	log.Printf("server.up: 0.0.0.0:%s\n", port)
 	http.ListenAndServe(":"+port, nil)
+}
+
+func setup(configPath string) {
+	log.Printf("config.load.started: %s\n", configPath)
+
+	botConfig, err := config.LoadFromPath(configPath)
+
+	if err != nil {
+		log.Fatalf("config.load.failed: %s\n", configPath)
+	}
+
+	if len(botConfig.TmpDir) > 0 {
+		git.SetParentDir(botConfig.TmpDir)
+	}
+
+	if len(botConfig.Port) > 0 {
+		port = botConfig.Port
+	}
+
+	github.SetSignature(botConfig.Secret)
+	github.SetAuth(botConfig.Username, botConfig.Password)
+	git.SetAuth(botConfig.Username, botConfig.Password)
+
+	git.Clean()
+
+	log.Printf("config.load.finished: %s\n", configPath)
 }
