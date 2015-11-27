@@ -6,31 +6,42 @@ import (
 	"io"
 	"log"
 	"net/http"
+	"strings"
+	"time"
 )
 
 func logRequest(r *http.Request) {
+	ip := ipAddr(r.RemoteAddr)
+
 	log.Printf(
 		"http.request.received method: %s, path: %s, ip: %s, client: %s\n",
 		r.Method,
 		r.RequestURI,
-		r.RemoteAddr,
-		generateClientId(r.RemoteAddr),
+		ip,
+		generateClientId(ip),
 	)
 }
 
-func logResponse(r *http.Request, status int) {
+func logResponse(r *http.Request, status int, startedAt time.Time) {
+	ip := ipAddr(r.RemoteAddr)
+
 	log.Printf(
-		"http.request.finished method: %s, path: %s, ip: %s, client: %s, status: %d\n",
+		"http.request.finished method: %s, path: %s, ip: %s, client: %s, status: %d, time: %v\n",
 		r.Method,
 		r.RequestURI,
-		r.RemoteAddr,
-		generateClientId(r.RemoteAddr),
+		ip,
+		generateClientId(ip),
 		status,
+		time.Now().Sub(startedAt),
 	)
 }
 
-func generateClientId(remoteIp string) string {
+func ipAddr(remoteAddr string) string {
+	return strings.Split(remoteAddr, ":")[0]
+}
+
+func generateClientId(key string) string {
 	md5Hash := md5.New()
-	io.WriteString(md5Hash, remoteIp)
+	io.WriteString(md5Hash, key)
 	return hex.EncodeToString(md5Hash.Sum(nil))
 }

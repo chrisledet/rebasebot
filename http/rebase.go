@@ -9,12 +9,14 @@ import (
 	"log"
 	"net/http"
 	"strings"
+	"time"
 
 	"github.com/chrisledet/rebasebot/git"
 	"github.com/chrisledet/rebasebot/github"
 )
 
 func Rebase(w http.ResponseWriter, r *http.Request) {
+	receivedAt := time.Now()
 	logRequest(r)
 
 	var githubEvent github.Event
@@ -22,7 +24,7 @@ func Rebase(w http.ResponseWriter, r *http.Request) {
 
 	if r.Method != "POST" {
 		w.WriteHeader(http.StatusNotFound)
-		logResponse(r, http.StatusNotFound)
+		logResponse(r, http.StatusNotFound, receivedAt)
 		return
 	}
 
@@ -33,7 +35,7 @@ func Rebase(w http.ResponseWriter, r *http.Request) {
 
 	if !isVerifiedRequest(r.Header, rawBody) {
 		w.WriteHeader(http.StatusUnauthorized)
-		logResponse(r, http.StatusUnauthorized)
+		logResponse(r, http.StatusUnauthorized, receivedAt)
 		return
 	}
 
@@ -82,7 +84,7 @@ func Rebase(w http.ResponseWriter, r *http.Request) {
 	}
 
 	w.WriteHeader(responseStatus)
-	logResponse(r, responseStatus)
+	logResponse(r, responseStatus, receivedAt)
 }
 
 func isVerifiedRequest(header http.Header, body []byte) bool {
