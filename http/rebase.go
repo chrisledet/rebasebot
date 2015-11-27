@@ -19,11 +19,10 @@ func Rebase(w http.ResponseWriter, r *http.Request) {
 
 	var githubEvent github.Event
 	responseStatus := http.StatusCreated
-	event := strings.ToLower(r.Method)
 
 	if r.Method != "POST" {
 		w.WriteHeader(http.StatusNotFound)
-		log.Printf("http.%s.response.sent: %d\n", event, http.StatusNotFound)
+		logResponse(r, http.StatusNotFound)
 		return
 	}
 
@@ -33,11 +32,13 @@ func Rebase(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if !isVerifiedRequest(r.Header, rawBody) {
-		responseStatus = http.StatusUnauthorized
+		w.WriteHeader(http.StatusUnauthorized)
+		logResponse(r, http.StatusUnauthorized)
+		return
 	}
 
 	if err := json.Unmarshal(rawBody, &githubEvent); err != nil {
-		responseStatus = http.StatusInternalServerError
+		responseStatus = http.StatusBadRequest
 		log.Printf("http.request.body.parse_failed: %s\n", err.Error())
 	}
 
