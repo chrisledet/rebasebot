@@ -5,7 +5,6 @@ import (
 	"crypto/sha1"
 	"encoding/hex"
 	"encoding/json"
-	"fmt"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -15,50 +14,7 @@ import (
 	"github.com/chrisledet/rebasebot/github"
 )
 
-func Status(w http.ResponseWriter, r *http.Request) {
-	event := strings.ToLower(r.Method)
-
-	log.Printf("http.request.%s.received: %s\n", event, r.RequestURI)
-
-	w.WriteHeader(http.StatusOK)
-	fmt.Fprintf(w, "OK\n")
-
-	log.Printf("http.%s.response.sent: %d\n", event, http.StatusOK)
-}
-
-func isVerifiedRequest(header http.Header, body []byte) bool {
-	serverSignature := github.Signature()
-	requestSignature := header.Get("X-Hub-Signature")
-
-	// when not set up with a secret
-	if len(serverSignature) < 1 {
-		log.Println("http.request.signature.verification.skipped")
-		return true
-	}
-
-	log.Println("http.request.signature.verification.started")
-
-	if len(requestSignature) < 1 {
-		log.Println("http.request.signature.verification.failed", "missing X-Hub-Signature header")
-		return false
-	}
-
-	mac := hmac.New(sha1.New, []byte(serverSignature))
-	mac.Write(body)
-	expectedMAC := mac.Sum(nil)
-	expectedSignature := "sha1=" + hex.EncodeToString(expectedMAC)
-	signatureMatched := hmac.Equal([]byte(expectedSignature), []byte(requestSignature))
-
-	if signatureMatched {
-		log.Println("http.request.signature.verification.passed")
-	} else {
-		log.Println("http.request.signature.verification.failed")
-	}
-
-	return signatureMatched
-}
-
-func Receive(w http.ResponseWriter, r *http.Request) {
+func Root(w http.ResponseWriter, r *http.Request) {
 	var githubEvent github.Event
 	responseStatus := http.StatusOK
 	event := strings.ToLower(r.Method)
@@ -130,6 +86,38 @@ func Receive(w http.ResponseWriter, r *http.Request) {
 
 	w.WriteHeader(responseStatus)
 	log.Printf("http.%s.response.sent: %d\n", event, responseStatus)
+}
+
+func isVerifiedRequest(header http.Header, body []byte) bool {
+	serverSignature := github.Signature()
+	requestSignature := header.Get("X-Hub-Signature")
+
+	// when not set up with a secret
+	if len(serverSignature) < 1 {
+		log.Println("http.request.signature.verification.skipped")
+		return true
+	}
+
+	log.Println("http.request.signature.verification.started")
+
+	if len(requestSignature) < 1 {
+		log.Println("http.request.signature.verification.failed", "missing X-Hub-Signature header")
+		return false
+	}
+
+	mac := hmac.New(sha1.New, []byte(serverSignature))
+	mac.Write(body)
+	expectedMAC := mac.Sum(nil)
+	expectedSignature := "sha1=" + hex.EncodeToString(expectedMAC)
+	signatureMatched := hmac.Equal([]byte(expectedSignature), []byte(requestSignature))
+
+	if signatureMatched {
+		log.Println("http.request.signature.verification.passed")
+	} else {
+		log.Println("http.request.signature.verification.failed")
+	}
+
+	return signatureMatched
 }
 
 func canRebase(e github.Event) bool {
