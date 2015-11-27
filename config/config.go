@@ -1,3 +1,4 @@
+// Package config provides a simple interface for rebasebot config files
 package config
 
 import (

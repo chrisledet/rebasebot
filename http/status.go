@@ -1,3 +1,4 @@
+// Package http implements handlers used by rebasebot http server
 package http
 
 import (
