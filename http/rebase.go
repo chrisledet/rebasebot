@@ -15,11 +15,11 @@ import (
 )
 
 func Rebase(w http.ResponseWriter, r *http.Request) {
-	var githubEvent github.Event
-	responseStatus := http.StatusOK
-	event := strings.ToLower(r.Method)
+	logRequest(r)
 
-	log.Printf("http.request.%s.received: %s\n", event, r.RequestURI)
+	var githubEvent github.Event
+	responseStatus := http.StatusCreated
+	event := strings.ToLower(r.Method)
 
 	if r.Method != "POST" {
 		w.WriteHeader(http.StatusNotFound)
@@ -29,15 +29,11 @@ func Rebase(w http.ResponseWriter, r *http.Request) {
 
 	rawBody, err := ioutil.ReadAll(r.Body)
 	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
-		log.Printf("http.%s.response.sent: %d\n", event, http.StatusInternalServerError)
-		return
+		responseStatus = http.StatusInternalServerError
 	}
 
 	if !isVerifiedRequest(r.Header, rawBody) {
-		w.WriteHeader(http.StatusUnauthorized)
-		log.Printf("http.%s.response.sent: %d\n", event, http.StatusUnauthorized)
-		return
+		responseStatus = http.StatusUnauthorized
 	}
 
 	if err := json.Unmarshal(rawBody, &githubEvent); err != nil {
@@ -85,7 +81,7 @@ func Rebase(w http.ResponseWriter, r *http.Request) {
 	}
 
 	w.WriteHeader(responseStatus)
-	log.Printf("http.%s.response.sent: %d\n", event, responseStatus)
+	logResponse(r, responseStatus)
 }
 
 func isVerifiedRequest(header http.Header, body []byte) bool {
