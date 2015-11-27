@@ -116,7 +116,11 @@ func Receive(w http.ResponseWriter, r *http.Request) {
 			git.Fetch(repositoryPath)
 			git.Checkout(repositoryPath, branch)
 			git.Reset(repositoryPath, branch)
-			git.Rebase(repositoryPath, baseBranch)
+
+			if err := git.Rebase(repositoryPath, baseBranch); err != nil {
+				return
+			}
+
 			git.Push(repositoryPath, branch)
 		}()
 	}
