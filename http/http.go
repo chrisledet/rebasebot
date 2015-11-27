@@ -113,7 +113,10 @@ func Receive(w http.ResponseWriter, r *http.Request) {
 				git.Clone(repoUrl)
 			}
 
-			git.Fetch(repositoryPath)
+			if err := git.Fetch(repositoryPath); err != nil {
+				return
+			}
+
 			git.Checkout(repositoryPath, branch)
 			git.Reset(repositoryPath, branch)
 
