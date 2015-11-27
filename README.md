@@ -77,12 +77,11 @@ This is a required step to complete the setup.
 
 1. Go into your GitHub repository's Webhooks and services page
 2. Add webhook
-  1. Enter your rebasebot's host public URL in the "Payload URL" field
+  1. Enter `http://<your host>/rebase` in the "Payload URL" field
   2. Content type should be set to "application/json"
   3. Generate a secret token and enter it in "Secret" field
   4. Only send "Issue comment" events. All other ones will be ignored.
 3. GitHub should succesfully ping the service and receive a HTTP 200 OK
-
 
 ## Resources
 

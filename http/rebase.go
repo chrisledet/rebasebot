@@ -14,7 +14,7 @@ import (
 	"github.com/chrisledet/rebasebot/github"
 )
 
-func Root(w http.ResponseWriter, r *http.Request) {
+func Rebase(w http.ResponseWriter, r *http.Request) {
 	var githubEvent github.Event
 	responseStatus := http.StatusOK
 	event := strings.ToLower(r.Method)

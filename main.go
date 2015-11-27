@@ -15,7 +15,8 @@ var port string = "8080"
 var configPath string = "./rebasebot.json"
 
 func main() {
-	http.HandleFunc("/", _http.Root)
+	http.HandleFunc("/", _http.Rebase)
+	http.HandleFunc("/rebase", _http.Rebase)
 	http.HandleFunc("/status", _http.Status)
 
 	if len(os.Getenv("CONFIG")) > 0 {
