@@ -11,8 +11,8 @@ import (
 	_http "github.com/chrisledet/rebasebot/http"
 )
 
-var port string = "8080"
-var configPath string = "./rebasebot.json"
+var port = "8080"
+var configPath = "./rebasebot.json"
 
 func main() {
 	http.HandleFunc("/", _http.Status)
