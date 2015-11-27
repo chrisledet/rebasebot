@@ -26,8 +26,9 @@ func Status(w http.ResponseWriter, r *http.Request) {
 	log.Printf("http.%s.response.sent: %d\n", event, http.StatusOK)
 }
 
-func isVerifiedRequest(requestSignature string, requestBody []byte) bool {
+func isVerifiedRequest(header http.Header, body []byte) bool {
 	serverSignature := github.Signature()
+	requestSignature := header.Get("X-Hub-Signature")
 
 	// when not set up with a secret
 	if len(serverSignature) < 1 {
@@ -43,7 +44,7 @@ func isVerifiedRequest(requestSignature string, requestBody []byte) bool {
 	}
 
 	mac := hmac.New(sha1.New, []byte(serverSignature))
-	mac.Write(requestBody)
+	mac.Write(body)
 	expectedMAC := mac.Sum(nil)
 	expectedSignature := "sha1=" + hex.EncodeToString(expectedMAC)
 	signatureMatched := hmac.Equal([]byte(expectedSignature), []byte(requestSignature))
@@ -77,8 +78,7 @@ func Receive(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	requestSignature := r.Header.Get("X-Hub-Signature")
-	if !isVerifiedRequest(requestSignature, rawBody) {
+	if !isVerifiedRequest(r.Header, rawBody) {
 		w.WriteHeader(http.StatusUnauthorized)
 		log.Printf("http.%s.response.sent: %d\n", event, http.StatusUnauthorized)
 		return
