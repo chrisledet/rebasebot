@@ -1,6 +1,6 @@
 # rebasebot
 
-A GitHub integration service that rebases your Pull request branches when you ask
+A GitHub bot that rebases your pull request branches when you ask
 
 ## How it works
 
