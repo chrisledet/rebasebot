@@ -54,7 +54,7 @@ func Rebase(w http.ResponseWriter, r *http.Request) {
 			defer log.Printf("bot.rebase.finished: %s\n", githubEvent.Repository.FullName)
 
 			repositoryPath := git.GetRepositoryPath(githubEvent.Repository.FullName)
-			pullRequest := github.FindPR(githubEvent.Repository, githubEvent.Issue.Number)
+			pullRequest := githubEvent.Repository.FindPR(githubEvent.Issue.Number)
 
 			if pullRequest.Number < 0 {
 				return
