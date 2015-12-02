@@ -8,19 +8,15 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
-	"strings"
 	"time"
 
-	"github.com/chrisledet/rebasebot/git"
 	"github.com/chrisledet/rebasebot/github"
+	"github.com/chrisledet/rebasebot/integrations"
 )
 
 func Rebase(w http.ResponseWriter, r *http.Request) {
 	receivedAt := time.Now()
 	logRequest(r)
-
-	var githubEvent github.Event
-	responseStatus := http.StatusCreated
 
 	if r.Method != "POST" {
 		w.WriteHeader(http.StatusNotFound)
@@ -28,58 +24,40 @@ func Rebase(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	rawBody, err := ioutil.ReadAll(r.Body)
+	var event github.Event
+	var responseStatus = http.StatusCreated
+
+	body, err := ioutil.ReadAll(r.Body)
 	if err != nil {
 		responseStatus = http.StatusInternalServerError
 	}
 
-	if !isVerifiedRequest(r.Header, rawBody) {
+	if !isVerifiedRequest(r.Header, body) {
 		w.WriteHeader(http.StatusUnauthorized)
 		logResponse(r, http.StatusUnauthorized, receivedAt)
 		return
 	}
 
-	if err := json.Unmarshal(rawBody, &githubEvent); err != nil {
+	if err := json.Unmarshal(body, &event); err != nil {
 		responseStatus = http.StatusBadRequest
 		log.Printf("http.request.body.parse_failed: %s\n", err.Error())
 	}
 
-	if canRebase(githubEvent) {
+	var repository = event.Repository.FullName
+
+	if len(repository) > 0 {
 		go func() {
-			if !strings.Contains(githubEvent.Comment.Body, github.Username()) {
+			if !github.WasMentioned(event.Comment) {
 				return
 			}
 
-			log.Printf("bot.rebase.started, name: %s\n", githubEvent.Repository.FullName)
-			defer log.Printf("bot.rebase.finished: %s\n", githubEvent.Repository.FullName)
+			log.Printf("bot.rebase.started, name: %s\n", event.Repository.FullName)
+			defer log.Printf("bot.rebase.finished: %s\n", event.Repository.FullName)
 
-			repositoryPath := git.GetRepositoryPath(githubEvent.Repository.FullName)
-			pullRequest := githubEvent.Repository.FindPR(githubEvent.Issue.Number)
-
-			if pullRequest.Number < 0 {
-				return
+			pullRequest := event.Repository.FindPR(event.Issue.Number)
+			if pullRequest.Number > 0 {
+				integrations.GitRebase(event.Repository.FullName, pullRequest.Base.Ref, pullRequest.Head.Ref)
 			}
-
-			branch := pullRequest.Head.Ref
-			baseBranch := pullRequest.Base.Ref
-			repoUrl := git.GenerateCloneUrl(githubEvent.Repository.FullName)
-
-			if !git.Exists(repositoryPath) {
-				git.Clone(repoUrl)
-			}
-
-			if err := git.Fetch(repositoryPath); err != nil {
-				return
-			}
-
-			git.Checkout(repositoryPath, branch)
-			git.Reset(repositoryPath, branch)
-
-			if err := git.Rebase(repositoryPath, baseBranch); err != nil {
-				return
-			}
-
-			git.Push(repositoryPath, branch)
 		}()
 	}
 
@@ -117,8 +95,4 @@ func isVerifiedRequest(header http.Header, body []byte) bool {
 	}
 
 	return signatureMatched
-}
-
-func canRebase(e github.Event) bool {
-	return len(e.Repository.FullName) > 0
 }

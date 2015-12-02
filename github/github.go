@@ -3,6 +3,7 @@ package github
 
 import (
 	"net/http"
+	"strings"
 )
 
 const (
@@ -41,4 +42,9 @@ func NewGitHubRequest(path string, httpMethod string) *http.Request {
 	request.Header.Add("Accept", mediaType)
 
 	return request
+}
+
+// Check to see if logged in user was mentioned in comment
+func WasMentioned(c Comment) bool {
+	return strings.Contains(c.Body, "@"+username)
 }

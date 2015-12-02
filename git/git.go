@@ -42,7 +42,7 @@ func Exists(repositoryPath string) bool {
 	return !os.IsNotExist(err)
 }
 
-func GetRepositoryPath(name string) string {
+func GetRepositoryFilePath(name string) string {
 	return path.Join(repoParentDir, name)
 }
 
