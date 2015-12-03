@@ -16,7 +16,7 @@ type Repository struct {
 	Owner    User   `json:"owner"`
 }
 
-func (r Repository) FindPR(number int) PullRequest {
+func (r Repository) FindPR(number int) (PullRequest, error) {
 	var pr PullRequest
 
 	log.Println("github.find_pr.started")
@@ -29,26 +29,26 @@ func (r Repository) FindPR(number int) PullRequest {
 
 	if err != nil {
 		log.Println("github.find_pr.failed error: %s", err)
-		return pr
+		return pr, err
 	}
 
 	if response.StatusCode != http.StatusOK {
 		log.Println("github.find_pr.failed status: ", response.StatusCode)
-		return pr
+		return pr, err
 	}
 
 	body, err := ioutil.ReadAll(response.Body)
 	if err != nil {
 		log.Println("github.find_pr.failed error:", err)
-		return pr
+		return pr, err
 	}
 
 	if err := json.Unmarshal(body, &pr); err != nil {
 		log.Println("github.find_pr.failed error:", err)
-		return pr
+		return pr, err
 	}
 
 	log.Printf("github.find_pr.completed number: %d\n", pr.Number)
 
-	return pr
+	return pr, nil
 }

@@ -54,8 +54,8 @@ func Rebase(w http.ResponseWriter, r *http.Request) {
 			log.Printf("bot.rebase.started, name: %s\n", event.Repository.FullName)
 			defer log.Printf("bot.rebase.finished: %s\n", event.Repository.FullName)
 
-			pullRequest := event.Repository.FindPR(event.Issue.Number)
-			if pullRequest.Number > 0 {
+			pullRequest, err := event.Repository.FindPR(event.Issue.Number)
+			if err == nil {
 				integrations.GitRebase(event.Repository.FullName, pullRequest.Base.Ref, pullRequest.Head.Ref)
 			}
 		}()
