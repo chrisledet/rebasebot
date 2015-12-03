@@ -41,25 +41,22 @@ func Rebase(w http.ResponseWriter, r *http.Request) {
 	if err := json.Unmarshal(body, &event); err != nil {
 		responseStatus = http.StatusBadRequest
 		log.Printf("http.request.body.parse_failed: %s\n", err.Error())
+		return
 	}
 
-	var repository = event.Repository.FullName
+	go func() {
+		if !github.WasMentioned(event.Comment) {
+			return
+		}
 
-	if len(repository) > 0 {
-		go func() {
-			if !github.WasMentioned(event.Comment) {
-				return
-			}
+		log.Printf("bot.rebase.started, name: %s\n", event.Repository.FullName)
+		defer log.Printf("bot.rebase.finished: %s\n", event.Repository.FullName)
 
-			log.Printf("bot.rebase.started, name: %s\n", event.Repository.FullName)
-			defer log.Printf("bot.rebase.finished: %s\n", event.Repository.FullName)
-
-			pullRequest, err := event.Repository.FindPR(event.Issue.Number)
-			if err == nil {
-				integrations.GitRebase(pullRequest)
-			}
-		}()
-	}
+		pullRequest, err := event.Repository.FindPR(event.Issue.Number)
+		if err == nil {
+			integrations.GitRebase(pullRequest)
+		}
+	}()
 
 	w.WriteHeader(responseStatus)
 	logResponse(r, responseStatus, receivedAt)
