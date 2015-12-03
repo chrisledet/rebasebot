@@ -54,20 +54,9 @@ The `GITHUB_*` are needed so the bot can post activity updates to GitHub as well
 
 ### Run
 
-Start rebasebot
-
 ```shell
-$ rebasebot
+$ $GOPATH/bin/rebasebot
 ```
-
-By default, rebasebot will attempt to locate its config `rebasebot.json` in the current working directory
-
-If you wish to store it in another location, you can specify that path via `CONFIG` environment variable
-
-```shell
-$ CONFIG=path/to/rebasebot.json rebasebot
-```
-
 
 ### Add GitHub Webhook
 
