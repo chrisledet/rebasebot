@@ -70,7 +70,7 @@ func Fetch(repositoryPath string) error {
 	defer log.Println("git.fetch.finished:", repositoryPath)
 
 	cmd := exec.Command("git", "fetch", "origin")
-	cmd.Dir = path.Join(".", repositoryPath)
+	cmd.Dir = path.Join(repositoryPath)
 	if err := cmd.Run(); err != nil {
 		log.Println("git.fetch.failed:", repositoryPath, err.Error())
 		return err
@@ -85,7 +85,7 @@ func Checkout(repositoryPath, gitRef string) error {
 	defer log.Println("git.checkout.finished:", repositoryPath, gitRef)
 
 	cmd := exec.Command("git", "checkout", gitRef)
-	cmd.Dir = path.Join(".", repositoryPath)
+	cmd.Dir = path.Join(repositoryPath)
 	if err := cmd.Run(); err != nil {
 		log.Println("git.checkout.failed:", repositoryPath, err.Error())
 		return err
@@ -100,7 +100,7 @@ func Reset(repositoryPath, branch string) error {
 	defer log.Println("git.reset.finished:", repositoryPath, branch)
 
 	cmd := exec.Command("git", "reset", "--hard", branch)
-	cmd.Dir = path.Join(".", repositoryPath)
+	cmd.Dir = path.Join(repositoryPath)
 	if err := cmd.Run(); err != nil {
 		log.Println("git.reset.failed:", repositoryPath, err.Error())
 		return err
@@ -115,13 +115,13 @@ func Rebase(repositoryPath, baseBranch string) error {
 	defer log.Println("git.rebase.finished:", repositoryPath, baseBranch)
 
 	cmd := exec.Command("git", "rebase", baseBranch)
-	cmd.Dir = path.Join(".", repositoryPath)
+	cmd.Dir = path.Join(repositoryPath)
 
 	if err := cmd.Run(); err != nil {
 		log.Printf("git.rebase.abort.started repo: %s, err: %s \n", repositoryPath, err.Error())
 
 		abortCmd := exec.Command("git", "rebase", "--abort")
-		abortCmd.Dir = path.Join(".", repositoryPath)
+		abortCmd.Dir = path.Join(repositoryPath)
 
 		if err := abortCmd.Run(); err != nil {
 			log.Println("git.rebase.abort.failed:", repositoryPath)
@@ -141,7 +141,7 @@ func Push(repositoryPath, branch string) error {
 	defer log.Println("git.push.finished:", repositoryPath, branch)
 
 	cmd := exec.Command("git", "push", "--force", "origin", branch)
-	cmd.Dir = path.Join(".", repositoryPath)
+	cmd.Dir = path.Join(repositoryPath)
 	if err := cmd.Run(); err != nil {
 		log.Println("git.push.failed:", repositoryPath, err.Error())
 		return err
