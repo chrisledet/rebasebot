@@ -27,7 +27,7 @@ func NewConfig() (*Config, error) {
 	config.Username = os.Getenv("GITHUB_USERNAME")
 	config.Password = os.Getenv("GITHUB_PASSWORD")
 	config.Port = os.Getenv("PORT")
-	config.Secret = os.Getenv("SECRET_TOKEN")
+	config.Secret = os.Getenv("SECRET")
 	config.TmpDir = os.Getenv("TMPDIR")
 
 	return config, nil
