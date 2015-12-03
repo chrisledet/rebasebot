@@ -17,7 +17,7 @@ type Config struct {
 func NewConfig() (*Config, error) {
 	config := &Config{Port: "8080"}
 
-	requiredEnvVars := []string{"PORT", "GITHUB_USERNAME", "GITHUB_PASSWORD", "TMPDIR"}
+	requiredEnvVars := []string{"PORT", "GITHUB_USERNAME", "GITHUB_PASSWORD"}
 	for _, envVar := range requiredEnvVars {
 		if len(os.Getenv(envVar)) == 0 {
 			return config, errors.New(envVar + " must be set")
