@@ -46,12 +46,10 @@ func GetRepositoryFilePath(name string) string {
 	return path.Join(repoParentDir, name)
 }
 
-// Clones the given Git url. Returns filepath to git repository
+// Clone executes a git clone command on the system. It returns the path to the repository on the system.
 func Clone(repositoryUrl string) (string, error) {
-	urlSplit := strings.Split(repositoryUrl, "/")
-	repoNameWithExt := urlSplit[len(urlSplit)-1]
-	orgName := urlSplit[len(urlSplit)-2]
-	repoName := strings.Split(repoNameWithExt, ".")[0]
+	orgName := extractOrgFromURL(repositoryUrl)
+	repoName := extractRepoNameFromURL(repositoryUrl)
 	repositoryPath := path.Join(repoParentDir, orgName, repoName)
 
 	log.Println("git.clone.started:", repositoryPath)
@@ -160,4 +158,15 @@ func Clean() {
 	}
 
 	log.Printf("git.cache.cleanup.finished")
+}
+
+func extractOrgFromURL(githubURL string) string {
+	splitBySlash := strings.Split(githubURL, "/")
+	return splitBySlash[len(splitBySlash)-2]
+}
+
+func extractRepoNameFromURL(githubURL string) string {
+	splitBySlash := strings.Split(githubURL, "/")
+	repoNameWithExt := splitBySlash[len(splitBySlash)-1]
+	return strings.Split(repoNameWithExt, ".")[0]
 }
