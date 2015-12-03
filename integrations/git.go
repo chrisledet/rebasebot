@@ -3,6 +3,7 @@ package integrations
 import (
 	"github.com/chrisledet/rebasebot/git"
 	"github.com/chrisledet/rebasebot/github"
+	"path"
 )
 
 // Ties the git operations together to perform a branch rebase
@@ -27,12 +28,12 @@ func GitRebase(pr *github.PullRequest) error {
 		return err
 	}
 
-	if err := git.Reset(filepath, pr.Head.Ref); err != nil {
+	if err := git.Reset(filepath, path.Join("origin", pr.Head.Ref)); err != nil {
 		pr.PostComment("I could not checkout " + pr.Head.Ref + " locally.")
 		return err
 	}
 
-	if err := git.Rebase(filepath, pr.Base.Ref); err != nil {
+	if err := git.Rebase(filepath, path.Join("origin", pr.Base.Ref)); err != nil {
 		pr.PostComment("I could not rebase " + pr.Head.Ref + " with " + pr.Base.Ref + ". There are conflicts.")
 		return err
 	}
