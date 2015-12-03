@@ -1,9 +1,9 @@
-// Package config provides a simple interface for rebasebot config files
+// Package config provides a simple interface for rebasebot configuration
 package config
 
 import (
-	"encoding/json"
-	"io/ioutil"
+	"errors"
+	"os"
 )
 
 type Config struct {
@@ -14,15 +14,21 @@ type Config struct {
 	TmpDir   string `json:"tmpdir"`
 }
 
-func LoadFromPath(path string) (Config, error) {
-	var config Config
+func NewConfig() (*Config, error) {
+	config := &Config{Port: "8080"}
 
-	fileContents, err := ioutil.ReadFile(path)
-	if err != nil {
-		return config, err
+	requiredEnvVars := []string{"PORT", "GITHUB_USERNAME", "GITHUB_PASSWORD", "TMPDIR"}
+	for _, envVar := range requiredEnvVars {
+		if len(os.Getenv(envVar)) == 0 {
+			return config, errors.New(envVar + " must be set")
+		}
 	}
 
-	json.Unmarshal(fileContents, &config)
+	config.Username = os.Getenv("GITHUB_USERNAME")
+	config.Password = os.Getenv("GITHUB_PASSWORD")
+	config.Port = os.Getenv("PORT")
+	config.Secret = os.Getenv("SECRET_TOKEN")
+	config.TmpDir = os.Getenv("TMPDIR")
 
-	return config, err
+	return config, nil
 }

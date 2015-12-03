@@ -3,7 +3,6 @@ package main
 import (
 	"log"
 	"net/http"
-	"os"
 
 	"github.com/chrisledet/rebasebot/config"
 	"github.com/chrisledet/rebasebot/git"
@@ -11,43 +10,37 @@ import (
 	_http "github.com/chrisledet/rebasebot/http"
 )
 
-var port = "8080"
-var configPath = "./rebasebot.json"
+var (
+	botConfig *config.Config
+)
+
+func init() {
+	conf, err := config.NewConfig()
+	if err != nil {
+		log.Fatalf("server.down err: %s\n", err.Error())
+	}
+
+	botConfig = conf
+}
 
 func main() {
+	setup()
+
 	http.HandleFunc("/", _http.Status)
 	http.HandleFunc("/rebase", _http.Rebase)
 	http.HandleFunc("/status", _http.Status)
 
-	if len(os.Getenv("CONFIG")) > 0 {
-		configPath = os.Getenv("CONFIG")
-	}
+	log.Printf("server.up: 0.0.0.0:%s\n", botConfig.Port)
 
-	setup(configPath)
-
-	log.Printf("server.up: 0.0.0.0:%s\n", port)
-
-	err := http.ListenAndServe(":"+port, nil)
+	err := http.ListenAndServe(":"+botConfig.Port, nil)
 	if err != nil {
 		log.Fatalf("server.down: %s\n", err)
 	}
 }
 
-func setup(configPath string) {
-	log.Printf("config.load.started: %s\n", configPath)
-
-	botConfig, err := config.LoadFromPath(configPath)
-
-	if err != nil {
-		log.Fatalf("config.load.failed: %s\n", configPath)
-	}
-
+func setup() {
 	if len(botConfig.TmpDir) > 0 {
 		git.SetParentDir(botConfig.TmpDir)
-	}
-
-	if len(botConfig.Port) > 0 {
-		port = botConfig.Port
 	}
 
 	github.SetSignature(botConfig.Secret)
@@ -55,6 +48,4 @@ func setup(configPath string) {
 	git.SetAuth(botConfig.Username, botConfig.Password)
 
 	git.Clean()
-
-	log.Printf("config.load.finished: %s\n", configPath)
 }

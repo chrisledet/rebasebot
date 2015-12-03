@@ -40,19 +40,18 @@ Make sure `$GOPATH/bin` is located in your `$PATH`
 $ go install
 ```
 
-### Config
+### Configuration
 
-Copy the sample config and update with it GitHub credentials in the `username` and `password` option
 
-```shell
-$ cp rebasebot.json.sample rebasebot.json
-```
+Here are the environment variables rebasebot uses:
 
-There are additional config options for further customize:
+* `GITHUB_USERNAME`: GitHub username for bot. Required.
+* `GITHUB_PASSWORD`: GitHub password for bot. Required.
+* `PORT`: HTTP server port for the bot. Required.
+* `TMPDIR`: A path to a writable directory. All local copies will live here. Highly recommended. Defaults to OS's tmp directory.
+* `SECRET`: A token used to verify web hook requests from GitHub. It's **strongly recommended** that you use this option.
 
-* `secret`: A token used to verify web hook requests from GitHub. It's **strongly recommended** that you use this option.
-
-* `port`: HTTP server port for the bot. Defaults to `8080`
+The `GITHUB_*` are needed so the bot can activity updates to GitHub as well as pushing to its accessible GitHub repositories. Using your personal credentials is _*not recommended*_.
 
 ### Run
 
