@@ -10,13 +10,12 @@ import (
 )
 
 type PullRequest struct {
-	Body       string     `json:"body"`
-	State      string     `json:"state"`
-	Title      string     `json:"title"`
-	Number     int        `json:"number"`
-	Head       GitRef     `json:"head"`
-	Base       GitRef     `json:"base"`
-	Repository Repository `json:"repository"`
+	Body   string `json:"body"`
+	State  string `json:"state"`
+	Title  string `json:"title"`
+	Number int    `json:"number"`
+	Head   GitRef `json:"head"`
+	Base   GitRef `json:"base"`
 }
 
 // PostComment posts a new comment on pull request via GitHub API
@@ -26,7 +25,7 @@ func (pr PullRequest) PostComment(msg string) (Comment, error) {
 	var err error
 	var comment Comment
 
-	createCommentPath := fmt.Sprintf("/repos/%s/issues/%d/comments", pr.Repository.FullName, pr.Number)
+	createCommentPath := fmt.Sprintf("/repos/%s/issues/%d/comments", pr.Head.Repository.FullName, pr.Number)
 	requestBodyAsBytes := []byte(fmt.Sprintf(`{"body":"%s"}`, msg))
 	requestBody := ioutil.NopCloser(bytes.NewReader(requestBodyAsBytes))
 

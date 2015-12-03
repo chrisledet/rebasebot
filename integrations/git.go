@@ -11,7 +11,10 @@ func GitRebase(pr *github.PullRequest) error {
 	remoteRepositoryURL := git.GenerateCloneURL(pr.Head.Repository.FullName)
 
 	if !git.Exists(filepath) {
-		git.Clone(remoteRepositoryURL)
+		if _, err := git.Clone(remoteRepositoryURL); err != nil {
+			pr.PostComment("I could not pull " + pr.Head.Repository.FullName + " from GitHub.")
+			return err
+		}
 	}
 
 	if err := git.Fetch(filepath); err != nil {
