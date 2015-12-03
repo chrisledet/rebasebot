@@ -120,7 +120,7 @@ func Rebase(repositoryPath, baseBranch string) error {
 	cmd.Dir = path.Join(".", repositoryPath)
 
 	if err := cmd.Run(); err != nil {
-		log.Println("git.rebase.abort.started:", repositoryPath)
+		log.Printf("git.rebase.abort.started repo: %s, err: %s \n", repositoryPath, err.Error())
 
 		abortCmd := exec.Command("git", "rebase", "--abort")
 		abortCmd.Dir = path.Join(".", repositoryPath)
