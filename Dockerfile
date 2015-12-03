@@ -21,11 +21,5 @@ RUN tar -C /usr/local -xzf tmp/go1.5.1.linux-amd64.tar.gz
 RUN go get -u github.com/chrisledet/rebasebot
 RUN go install github.com/chrisledet/rebasebot
 
-# Download config
-RUN echo '{ "username": "", "password": "", "port": "", "secret": "", "tmpdir": "tmp"}' > rebasebot.json
-
-# Expose port
-EXPOSE 8080
-
 # Set default container command
 ENTRYPOINT $GOPATH/bin/rebasebot
