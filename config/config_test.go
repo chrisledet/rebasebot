@@ -1,37 +1,47 @@
 package config
 
 import (
+	"os"
 	"testing"
 )
 
-func TestLoadFromPath(t *testing.T) {
-	config, err := LoadFromPath("../rebasebot.json.sample")
+func TestNewConfig(t *testing.T) {
+
+	_, err := NewConfig()
 
 	if err != nil {
-		t.Errorf("Error when loading file: %s", err.Error())
-	}
-
-	if len(config.Username) < 1 {
-		t.Error("config does not contain username")
-	}
-
-	if len(config.Password) < 1 {
-		t.Error("config does not contain password")
-	}
-
-	if len(config.TmpDir) < 1 {
-		t.Error("config does not contain tmpdir")
-	}
-
-	if len(config.Port) < 1 {
-		t.Error("config does not contain port")
+		t.Errorf("error was returned: %s \n", err.Error())
 	}
 }
 
-func TestConfigNotFound(t *testing.T) {
-	_, err := LoadFromPath("test.json")
+func TestNewConfigReturningErrorMissingPort(t *testing.T) {
+	os.Setenv("PORT", "")
 
-	if err == nil {
-		t.Error("Expected an error, got nil")
+	if _, err := NewConfig(); err == nil {
+		t.Error("error was not returned")
 	}
+}
+
+func TestNewConfigReturningErrorMissingGitHubUsername(t *testing.T) {
+	os.Setenv("GITHUB_USERNAME", "")
+
+	if _, err := NewConfig(); err == nil {
+		t.Error("error was not returned")
+	}
+}
+
+func TestNewConfigReturningErrorMissingGitHubPassword(t *testing.T) {
+	os.Setenv("GITHUB_PASSWORD", "")
+
+	if _, err := NewConfig(); err == nil {
+		t.Error("error was not returned")
+	}
+}
+
+func TestMain(m *testing.M) {
+	os.Setenv("PORT", "port")
+	os.Setenv("GITHUB_USERNAME", "username")
+	os.Setenv("GITHUB_PASSWORD", "password")
+
+	os.Exit(m.Run())
 }
