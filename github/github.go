@@ -7,7 +7,8 @@ import (
 )
 
 const (
-	mediaType = "application/vnd.github.v3+json"
+	mediaType   = "application/vnd.github.v3+json"
+	contentType = "application/json"
 )
 
 var (
@@ -39,7 +40,8 @@ func NewGitHubRequest(path string, httpMethod string) *http.Request {
 	requestUrl := "https://api.github.com" + path
 	request, _ := http.NewRequest(httpMethod, requestUrl, nil)
 	request.SetBasicAuth(username, password)
-	request.Header.Add("Accept", mediaType)
+	request.Header.Set("Accept", mediaType)
+	request.Header.Set("Content-Type", contentType)
 
 	return request
 }
