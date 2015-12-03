@@ -9,6 +9,7 @@ import (
 const (
 	mediaType   = "application/vnd.github.v3+json"
 	contentType = "application/json"
+	agent       = "rebasebot"
 )
 
 var (
@@ -42,6 +43,7 @@ func NewGitHubRequest(path string, httpMethod string) *http.Request {
 	request.SetBasicAuth(username, password)
 	request.Header.Set("Accept", mediaType)
 	request.Header.Set("Content-Type", contentType)
+	request.Header.Set("User-Agent", agent)
 
 	return request
 }
