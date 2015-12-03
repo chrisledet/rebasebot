@@ -2,12 +2,13 @@ package integrations
 
 import (
 	"github.com/chrisledet/rebasebot/git"
+	"github.com/chrisledet/rebasebot/github"
 )
 
 // Ties the git operations together to perform a branch rebase
-func GitRebase(repostioryPath, baseRef, headRef string) error {
-	filepath := git.GetRepositoryFilePath(repostioryPath)
-	remoteRepositoryURL := git.GenerateCloneURL(repostioryPath)
+func GitRebase(pr github.PullRequest) error {
+	filepath := git.GetRepositoryFilePath(pr.Repository.FullName)
+	remoteRepositoryURL := git.GenerateCloneURL(pr.Repository.FullName)
 
 	if !git.Exists(filepath) {
 		git.Clone(remoteRepositoryURL)
@@ -17,19 +18,19 @@ func GitRebase(repostioryPath, baseRef, headRef string) error {
 		return err
 	}
 
-	if err := git.Checkout(filepath, headRef); err != nil {
+	if err := git.Checkout(filepath, pr.Head.Ref); err != nil {
 		return err
 	}
 
-	if err := git.Reset(filepath, headRef); err != nil {
+	if err := git.Reset(filepath, pr.Head.Ref); err != nil {
 		return err
 	}
 
-	if err := git.Rebase(filepath, baseRef); err != nil {
+	if err := git.Rebase(filepath, pr.Base.Ref); err != nil {
 		return err
 	}
 
-	if err := git.Push(filepath, headRef); err != nil {
+	if err := git.Push(filepath, pr.Head.Ref); err != nil {
 		return err
 	}
 

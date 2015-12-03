@@ -56,7 +56,7 @@ func Rebase(w http.ResponseWriter, r *http.Request) {
 
 			pullRequest, err := event.Repository.FindPR(event.Issue.Number)
 			if err == nil {
-				integrations.GitRebase(event.Repository.FullName, pullRequest.Base.Ref, pullRequest.Head.Ref)
+				integrations.GitRebase(pullRequest)
 			}
 		}()
 	}
