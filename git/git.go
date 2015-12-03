@@ -33,7 +33,7 @@ func SetAuth(user string, pwd string) {
 	password = pwd
 }
 
-func GenerateCloneUrl(repositoryFullName string) string {
+func GenerateCloneURL(repositoryFullName string) string {
 	return fmt.Sprintf("https://%s:%s@github.com/%s.git", username, password, repositoryFullName)
 }
 

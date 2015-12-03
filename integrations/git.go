@@ -7,7 +7,7 @@ import (
 // Ties the git operations together to perform a branch rebase
 func GitRebase(repostioryPath, baseRef, headRef string) error {
 	filepath := git.GetRepositoryFilePath(repostioryPath)
-	remoteRepositoryURL := git.GenerateCloneUrl(repostioryPath)
+	remoteRepositoryURL := git.GenerateCloneURL(repostioryPath)
 
 	if !git.Exists(filepath) {
 		git.Clone(remoteRepositoryURL)
