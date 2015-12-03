@@ -37,9 +37,9 @@ func Signature() string {
 }
 
 // Returns a request set up for the GitHub API
-func NewGitHubRequest(path string, httpMethod string) *http.Request {
+func NewGitHubRequest(path string) *http.Request {
 	requestUrl := "https://api.github.com" + path
-	request, _ := http.NewRequest(httpMethod, requestUrl, nil)
+	request, _ := http.NewRequest("GET", requestUrl, nil)
 	request.SetBasicAuth(username, password)
 	request.Header.Set("Accept", mediaType)
 	request.Header.Set("Content-Type", contentType)
