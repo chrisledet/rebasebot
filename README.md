@@ -50,7 +50,7 @@ Here are the environment variables rebasebot uses:
 * `TMPDIR`: A path to a writable directory. All local copies will live here. Defaults to OS tmp. **Strongly recommended**.
 * `SECRET`: A token used to verify web hook requests from GitHub. **Strongly recommended**.
 
-The `GITHUB_*` are needed so the bot can activity updates to GitHub as well as pushing to its accessible GitHub repositories. Using your personal credentials is _*not recommended*_.
+The `GITHUB_*` are needed so the bot can post activity updates to GitHub as well as pushing to its accessible GitHub repositories. Using your personal credentials is _*not recommended*_.
 
 ### Run
 
