@@ -30,12 +30,12 @@ func GitRebase(pr *github.PullRequest) error {
 	}
 
 	if err := git.Rebase(filepath, pr.Base.Ref); err != nil {
-		pr.PostComment("I could not rebase your PR with " + pr.Base.Ref + ". There were conflicts.")
+		pr.PostComment("I could not rebase " + pr.Head.Ref + " with " + pr.Base.Ref + ". There are conflicts.")
 		return err
 	}
 
 	if err := git.Push(filepath, pr.Head.Ref); err != nil {
-		pr.PostComment("I could not push to " + pr.Base.Ref + ".")
+		pr.PostComment("I could not push the changes to " + pr.Base.Ref + ".")
 		return err
 	}
 
