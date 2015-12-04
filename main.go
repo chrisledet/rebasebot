@@ -10,6 +10,10 @@ import (
 	_http "github.com/chrisledet/rebasebot/http"
 )
 
+const (
+	Version = "0.1"
+)
+
 var (
 	botConfig *config.Config
 )
@@ -30,7 +34,7 @@ func main() {
 	http.HandleFunc("/rebase", _http.Rebase)
 	http.HandleFunc("/status", _http.Status)
 
-	log.Printf("server.up: 0.0.0.0:%s\n", botConfig.Port)
+	log.Printf("server.up: 0.0.0.0:%s version: %d\n", botConfig.Port, Version)
 
 	err := http.ListenAndServe(":"+botConfig.Port, nil)
 	if err != nil {
