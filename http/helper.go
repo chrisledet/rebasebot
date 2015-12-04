@@ -18,7 +18,7 @@ func logRequest(r *http.Request) {
 		r.Method,
 		r.RequestURI,
 		ip,
-		generateClientId(ip),
+		generateClientID(ip),
 	)
 }
 
@@ -30,7 +30,7 @@ func logResponse(r *http.Request, status int, startedAt time.Time) {
 		r.Method,
 		r.RequestURI,
 		ip,
-		generateClientId(ip),
+		generateClientID(ip),
 		status,
 		time.Now().Sub(startedAt),
 	)
@@ -40,7 +40,7 @@ func ipAddr(remoteAddr string) string {
 	return strings.Split(remoteAddr, ":")[0]
 }
 
-func generateClientId(key string) string {
+func generateClientID(key string) string {
 	md5Hash := md5.New()
 	io.WriteString(md5Hash, key)
 	return hex.EncodeToString(md5Hash.Sum(nil))
