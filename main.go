@@ -34,7 +34,7 @@ func main() {
 	http.HandleFunc("/rebase", _http.Rebase)
 	http.HandleFunc("/status", _http.Status)
 
-	log.Printf("server.up: 0.0.0.0:%s version: %d\n", botConfig.Port, Version)
+	log.Printf("server.up: 0.0.0.0:%s version: %s\n", botConfig.Port, Version)
 
 	err := http.ListenAndServe(":"+botConfig.Port, nil)
 	if err != nil {
