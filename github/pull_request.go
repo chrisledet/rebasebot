@@ -52,7 +52,7 @@ func (pr PullRequest) PostComment(msg string) (Comment, error) {
 	if response.StatusCode != http.StatusCreated {
 		apiError := new(Error)
 		json.Unmarshal(responseBodyAsBytes, apiError)
-		log.Printf("github.pr.comments.create.failed status: %s, msg: %s \n", response.StatusCode, apiError.Message)
+		log.Printf("github.pr.comments.create.failed status: %d, msg: %s \n", response.StatusCode, apiError.Message)
 		return comment, err
 	}
 
