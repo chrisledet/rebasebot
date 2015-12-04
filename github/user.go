@@ -1,6 +1,6 @@
 package github
 
 type User struct {
-	Id    int    `json:"id"`
+	ID    int    `json:"id"`
 	Login string `json:"login"`
 }
