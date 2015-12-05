@@ -9,8 +9,8 @@ ENV PATH $PATH:$GOROOT/bin
 RUN go get -u github.com/chrisledet/rebasebot
 RUN go install github.com/chrisledet/rebasebot
 
-RUN ln -sf /dev/stdout /var/log/rebasebot/access.log
-RUN ln -sf /dev/stderr /var/log/rebasebot/error.log
+# Logging
+RUN ln -sf /dev/stdout /var/log/rebasebot.log
 
 # Set default container command
 ENTRYPOINT $GOPATH/bin/rebasebot
