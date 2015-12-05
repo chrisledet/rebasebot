@@ -3,6 +3,7 @@ package main
 import (
 	"log"
 	"net/http"
+	"os"
 
 	"github.com/chrisledet/rebasebot/config"
 	"github.com/chrisledet/rebasebot/git"
@@ -19,7 +20,16 @@ var (
 )
 
 func init() {
-	conf, err := config.NewConfig()
+	var conf *config.Config
+	var err error
+
+	switch os.Getenv("DEV") {
+	case "true":
+		conf, err = config.NewDevConfig()
+	default:
+		conf, err = config.NewConfig()
+	}
+
 	if err != nil {
 		log.Fatalf("server.down err: %s\n", err.Error())
 	}

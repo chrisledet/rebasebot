@@ -3,7 +3,9 @@ package config
 
 import (
 	"errors"
+	"io/ioutil"
 	"os"
+	"strings"
 )
 
 type Config struct {
@@ -31,4 +33,23 @@ func NewConfig() (*Config, error) {
 	config.TmpDir = os.Getenv("TMPDIR")
 
 	return config, nil
+}
+
+func NewDevConfig() (*Config, error) {
+	fileInBytes, err := ioutil.ReadFile(".env")
+	if err != nil {
+		return nil, err
+	}
+
+	fileContents := string(fileInBytes)
+	fileContentsByLine := strings.Split(fileContents, "\n")
+
+	for _, line := range fileContentsByLine {
+		fileContentsByLine := strings.Split(strings.TrimSpace(line), "=")
+		if len(fileContentsByLine) == 2 {
+			os.Setenv(fileContentsByLine[0], fileContentsByLine[1])
+		}
+	}
+
+	return NewConfig()
 }

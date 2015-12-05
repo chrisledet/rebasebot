@@ -2,3 +2,4 @@ rebasebot
 rebasebot.json
 .DS_Store
 tmp/
+.env
