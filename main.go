@@ -40,7 +40,6 @@ func init() {
 func main() {
 	setup()
 
-	http.HandleFunc("/", _http.Status)
 	http.HandleFunc("/rebase", _http.Rebase)
 	http.HandleFunc("/status", _http.Status)
 
