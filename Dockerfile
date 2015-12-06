@@ -10,4 +10,4 @@ RUN go get -u github.com/chrisledet/rebasebot
 RUN go install github.com/chrisledet/rebasebot
 
 # Set default container command
-ENTRYPOINT $GOPATH/bin/rebasebot
+ENTRYPOINT $GOPATH/bin/rebasebot >> /var/log/rebasebot.log
