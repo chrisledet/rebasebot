@@ -14,4 +14,4 @@ RUN git config --global user.name "Rebase Bot"
 RUN git config --global user.email "rebase-bot@users.noreply.github.com"
 
 # Set default container command
-ENTRYPOINT $GOPATH/bin/rebasebot >> /var/log/rebasebot.log
+ENTRYPOINT $GOPATH/bin/rebasebot
