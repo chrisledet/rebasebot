@@ -53,7 +53,6 @@ func Clone(repositoryUrl string) (string, error) {
 	repositoryPath := path.Join(repoParentDir, orgName, repoName)
 
 	log.Println("git.clone.started:", repositoryPath)
-	defer log.Println("git.clone.finished:", repositoryPath)
 
 	cmd := exec.Command("git", "clone", repositoryUrl, repositoryPath)
 	if err := cmd.Run(); err != nil {
@@ -61,13 +60,14 @@ func Clone(repositoryUrl string) (string, error) {
 		return "", err
 	}
 
+	log.Println("git.clone.finished:", repositoryPath)
+
 	return repositoryPath, nil
 }
 
 // Calls git fetch inside repository path
 func Fetch(repositoryPath string) error {
 	log.Println("git.fetch.started:", repositoryPath)
-	defer log.Println("git.fetch.finished:", repositoryPath)
 
 	cmd := exec.Command("git", "fetch", "origin")
 	cmd.Dir = path.Join(repositoryPath)
@@ -76,13 +76,14 @@ func Fetch(repositoryPath string) error {
 		return err
 	}
 
+	log.Println("git.fetch.finished:", repositoryPath)
+
 	return nil
 }
 
 // Checks out a given git ref inside repository path
 func Checkout(repositoryPath, gitRef string) error {
 	log.Println("git.checkout.started:", repositoryPath, gitRef)
-	defer log.Println("git.checkout.finished:", repositoryPath, gitRef)
 
 	cmd := exec.Command("git", "checkout", gitRef)
 	cmd.Dir = path.Join(repositoryPath)
@@ -91,13 +92,14 @@ func Checkout(repositoryPath, gitRef string) error {
 		return err
 	}
 
+	log.Println("git.checkout.finished:", repositoryPath, gitRef)
+
 	return nil
 }
 
 // Does hard reset inside repository path
 func Reset(repositoryPath, branch string) error {
 	log.Println("git.reset.started:", repositoryPath, branch)
-	defer log.Println("git.reset.finished:", repositoryPath, branch)
 
 	cmd := exec.Command("git", "reset", "--hard", branch)
 	cmd.Dir = path.Join(repositoryPath)
@@ -106,13 +108,14 @@ func Reset(repositoryPath, branch string) error {
 		return err
 	}
 
+	log.Println("git.reset.finished:", repositoryPath, branch)
+
 	return nil
 }
 
 // Rebases branch with baseBranch inside repository path
 func Rebase(repositoryPath, baseBranch string) error {
 	log.Println("git.rebase.started:", repositoryPath, baseBranch)
-	defer log.Println("git.rebase.finished:", repositoryPath, baseBranch)
 
 	cmd := exec.Command("git", "rebase", baseBranch)
 	cmd.Dir = path.Join(repositoryPath)
@@ -132,13 +135,14 @@ func Rebase(repositoryPath, baseBranch string) error {
 		return err
 	}
 
+	log.Println("git.rebase.finished:", repositoryPath, baseBranch)
+
 	return nil
 }
 
 // Pushes branch back to origin
 func Push(repositoryPath, branch string) error {
 	log.Println("git.push.started:", repositoryPath, branch)
-	defer log.Println("git.push.finished:", repositoryPath, branch)
 
 	cmd := exec.Command("git", "push", "--force", "origin", branch)
 	cmd.Dir = path.Join(repositoryPath)
@@ -146,6 +150,8 @@ func Push(repositoryPath, branch string) error {
 		log.Println("git.push.failed:", repositoryPath, err.Error())
 		return err
 	}
+
+	log.Println("git.push.finished:", repositoryPath, branch)
 
 	return nil
 }
