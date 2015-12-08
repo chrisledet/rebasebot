@@ -16,6 +16,20 @@ var (
 	password      string
 )
 
+type Output struct {
+	Buffer string
+}
+
+func (w *Output) Write(b []byte) (int, error) {
+	w.Buffer = w.Buffer + string(b)
+
+	return len(b), nil
+}
+
+func (o *Output) String() string {
+	return o.Buffer
+}
+
 func init() {
 	repoParentDir = os.TempDir()
 }
@@ -115,13 +129,18 @@ func Reset(repositoryPath, branch string) error {
 
 // Rebases branch with baseBranch inside repository path
 func Rebase(repositoryPath, baseBranch string) error {
+	cmdOutput := &Output{Buffer: ""}
 	log.Println("git.rebase.started:", repositoryPath, baseBranch)
 
 	cmd := exec.Command("git", "rebase", baseBranch)
 	cmd.Dir = path.Join(repositoryPath)
+	cmd.Stderr = cmdOutput
+	cmd.Stdout = cmdOutput
 
 	if err := cmd.Run(); err != nil {
-		log.Printf("git.rebase.abort.started repo: %s, err: %s \n", repositoryPath, err.Error())
+		log.Printf("git.rebase.failed repo: %s, err: %s \n", repositoryPath, err.Error())
+
+		log.Printf("git.rebase.abort.started repo: %s, err: %s, stderr: %s \n", repositoryPath, err.Error(), cmdOutput.String())
 
 		abortCmd := exec.Command("git", "rebase", "--abort")
 		abortCmd.Dir = path.Join(repositoryPath)
