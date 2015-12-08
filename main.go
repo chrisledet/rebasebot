@@ -59,6 +59,4 @@ func setup() {
 	github.SetSignature(botConfig.Secret)
 	github.SetAuth(botConfig.Username, botConfig.Password)
 	git.SetAuth(botConfig.Username, botConfig.Password)
-
-	git.Clean()
 }
