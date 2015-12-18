@@ -28,7 +28,7 @@ func (r Repository) FindPR(number int) (*PullRequest, error) {
 	defer response.Body.Close()
 
 	if err != nil {
-		log.Println("github.find_pr.failed error: %s", err)
+		log.Println("github.find_pr.failed error: ", err)
 		return &pr, err
 	}
 
