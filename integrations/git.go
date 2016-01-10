@@ -1,9 +1,10 @@
 package integrations
 
 import (
+	"path"
+
 	"github.com/chrisledet/rebasebot/git"
 	"github.com/chrisledet/rebasebot/github"
-	"path"
 )
 
 // Ties the git operations together to perform a branch rebase
