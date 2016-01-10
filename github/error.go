@@ -1,9 +1,5 @@
 package github
 
-import (
-// "encoding/json"
-)
-
 type Error struct {
 	Message          string `json:"message"`
 	InvalidResources []InvalidResource
