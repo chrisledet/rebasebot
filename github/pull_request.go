@@ -25,7 +25,7 @@ func (pr PullRequest) PostComment(msg string) (Comment, error) {
 	var err error
 	var comment Comment
 
-	createCommentPath := fmt.Sprintf("/repos/%s/issues/%d/comments", pr.Head.Repository.FullName, pr.Number)
+	createCommentPath := fmt.Sprintf("/repos/%s/issues/%d/comments", pr.Base.Repository.FullName, pr.Number)
 	requestBodyAsBytes := []byte(fmt.Sprintf(`{"body":"%s"}`, msg))
 	requestBody := ioutil.NopCloser(bytes.NewReader(requestBodyAsBytes))
 
