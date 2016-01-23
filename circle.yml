@@ -1,0 +1,8 @@
+dependencies:
+  pre:
+    - go get -u github.com/jstemmer/go-junit-report
+test:
+  pre:
+    - mkdir -p $CIRCLE_TEST_REPORTS/junit/
+  override:
+    - go test -v -race ./... | go-junit-report > $CIRCLE_TEST_REPORTS/junit/report.xml
