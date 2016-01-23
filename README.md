@@ -1,4 +1,4 @@
-# rebasebot [![Build Status](https://semaphoreci.com/api/v1/projects/4ca9c4fd-13e5-4c0b-9192-f6ee0b82c44e/622381/badge.svg)](https://semaphoreci.com/chrisledet/rebasebot)
+# rebasebot [![Circle CI](https://circleci.com/gh/chrisledet/rebasebot.svg?style=svg)](https://circleci.com/gh/chrisledet/rebasebot)
 
 A GitHub bot that rebases your pull request branches when you ask
 
