@@ -31,20 +31,16 @@ func (o *Output) String() string {
 }
 
 func init() {
-	repoParentDir = os.TempDir()
-}
+	tmpDirOverride := os.Getenv("TMPDIR")
 
-func SetParentDir(path string) {
-	repoParentDir = path
-}
+	if len(tmpDirOverride) > 0 {
+		repoParentDir = tmpDirOverride
+	} else {
+		repoParentDir = os.TempDir()
+	}
 
-func ParentDir() string {
-	return repoParentDir
-}
-
-func SetAuth(user string, pwd string) {
-	username = user
-	password = pwd
+	username = os.Getenv("GITHUB_USERNAME")
+	password = os.Getenv("GITHUB_PASSWORD")
 }
 
 func GenerateCloneURL(repositoryFullName string) string {

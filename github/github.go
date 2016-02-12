@@ -3,6 +3,7 @@ package github
 
 import (
 	"net/http"
+	"os"
 	"strings"
 )
 
@@ -19,21 +20,10 @@ var (
 	httpClient = &http.Client{}
 )
 
-func SetAuth(user string, pwd string) {
-	username = user
-	password = pwd
-}
-
-func SetSignature(sign string) {
-	signature = sign
-}
-
-func Username() string {
-	return username
-}
-
-func Signature() string {
-	return signature
+func init() {
+	username = os.Getenv("GITHUB_USERNAME")
+	password = os.Getenv("GITHUB_PASSWORD")
+	signature = os.Getenv("SECRET")
 }
 
 // Returns a request set up for the GitHub API

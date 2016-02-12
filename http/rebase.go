@@ -8,6 +8,7 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
+	"os"
 	"time"
 
 	"github.com/chrisledet/rebasebot/github"
@@ -63,7 +64,7 @@ func Rebase(w http.ResponseWriter, r *http.Request) {
 }
 
 func isVerifiedRequest(header http.Header, body []byte) bool {
-	serverSignature := github.Signature()
+	serverSignature := os.Getenv("SECRET")
 	requestSignature := header.Get("X-Hub-Signature")
 
 	// when not set up with a secret

@@ -6,8 +6,6 @@ import (
 	"os"
 
 	"github.com/chrisledet/rebasebot/config"
-	"github.com/chrisledet/rebasebot/git"
-	"github.com/chrisledet/rebasebot/github"
 	_http "github.com/chrisledet/rebasebot/http"
 )
 
@@ -32,14 +30,6 @@ func init() {
 	if err != nil {
 		log.Fatalf("server.down err: %s\n", err.Error())
 	}
-
-	if len(conf.TmpDir) > 0 {
-		git.SetParentDir(conf.TmpDir)
-	}
-
-	github.SetSignature(conf.Secret)
-	github.SetAuth(conf.Username, conf.Password)
-	git.SetAuth(conf.Username, conf.Password)
 }
 
 func main() {
