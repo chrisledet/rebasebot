@@ -16,11 +16,10 @@ const (
 )
 
 var (
-	botConfig *config.Config
+	conf *config.Config
 )
 
 func init() {
-	var conf *config.Config
 	var err error
 
 	switch os.Getenv("DEV") {
@@ -34,29 +33,24 @@ func init() {
 		log.Fatalf("server.down err: %s\n", err.Error())
 	}
 
-	botConfig = conf
+	if len(conf.TmpDir) > 0 {
+		git.SetParentDir(conf.TmpDir)
+	}
+
+	github.SetSignature(conf.Secret)
+	github.SetAuth(conf.Username, conf.Password)
+	git.SetAuth(conf.Username, conf.Password)
 }
 
 func main() {
-	setup()
 
 	http.HandleFunc("/rebase", _http.Rebase)
 	http.HandleFunc("/status", _http.Status)
 
-	log.Printf("server.up: 0.0.0.0:%s version: %s\n", botConfig.Port, Version)
+	log.Printf("server.up: 0.0.0.0:%s version: %s\n", conf.Port, Version)
 
-	err := http.ListenAndServe(":"+botConfig.Port, nil)
+	err := http.ListenAndServe(":"+conf.Port, nil)
 	if err != nil {
 		log.Fatalf("server.down: %s\n", err)
 	}
-}
-
-func setup() {
-	if len(botConfig.TmpDir) > 0 {
-		git.SetParentDir(botConfig.TmpDir)
-	}
-
-	github.SetSignature(botConfig.Secret)
-	github.SetAuth(botConfig.Username, botConfig.Password)
-	git.SetAuth(botConfig.Username, botConfig.Password)
 }
