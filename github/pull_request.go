@@ -34,7 +34,6 @@ func (pr PullRequest) PostComment(msg string) (Comment, error) {
 	request.Header.Set("ContentLength", string(len(requestBodyAsBytes)))
 	request.Body = requestBody
 	response, err := httpClient.Do(request)
-	defer response.Body.Close()
 
 	var responseBodyAsBytes []byte
 
@@ -42,6 +41,8 @@ func (pr PullRequest) PostComment(msg string) (Comment, error) {
 		log.Println("github.pr.comments.create.failed error:", err.Error())
 		return comment, err
 	}
+
+	defer response.Body.Close()
 
 	responseBodyAsBytes, err = ioutil.ReadAll(response.Body)
 	if err != nil {
