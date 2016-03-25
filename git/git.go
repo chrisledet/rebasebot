@@ -155,6 +155,22 @@ func Rebase(repositoryPath, baseBranch string) error {
 	return nil
 }
 
+// Light wrapper around os/exec.Command + logging
+func Prune(repositoryPath string) error {
+	log.Println("git.remote.prune.started:", repositoryPath)
+
+	cmd := exec.Command("git", "remote", "prune", "origin")
+	cmd.Dir = path.Join(repositoryPath)
+	if err := cmd.Run(); err != nil {
+		log.Println("git.remote.prune.failed:", repositoryPath, err.Error())
+		return err
+	}
+
+	log.Println("git.remote.prune.finished:", repositoryPath)
+
+	return nil
+}
+
 // Pushes branch back to origin
 func Push(repositoryPath, branch string) error {
 	log.Println("git.push.started:", repositoryPath, branch)

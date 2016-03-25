@@ -20,7 +20,8 @@ func GitRebase(pr *github.PullRequest) error {
 	}
 
 	if err := git.Fetch(filepath); err != nil {
-		pr.PostComment("I could not fetch the latest changes from GitHub.")
+		git.Prune(filepath)
+		pr.PostComment("I could not fetch the latest changes from GitHub. Please try again in a few minutes.")
 		return err
 	}
 
