@@ -35,6 +35,16 @@ func GitRebase(pr *github.PullRequest) error {
 		return err
 	}
 
+	if err := git.Config(filepath, "user.name", git.GetName()); err != nil {
+		pr.PostComment("I could run git config for user.name on the server.")
+		return err
+	}
+
+	if err := git.Config(filepath, "user.email", git.GetEmail()); err != nil {
+		pr.PostComment("I could run git config for user.email on the server.")
+		return err
+	}
+
 	if err := git.Rebase(filepath, path.Join("origin", pr.Base.Ref)); err != nil {
 		pr.PostComment("I could not rebase " + pr.Head.Ref + " with " + pr.Base.Ref + ". There are conflicts.")
 		return err
