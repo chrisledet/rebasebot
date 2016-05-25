@@ -14,6 +14,8 @@ var (
 	repoParentDir string
 	username      string
 	password      string
+	gitName       string
+	gitEmail      string
 )
 
 type Output struct {
@@ -41,6 +43,24 @@ func init() {
 
 	username = os.Getenv("GITHUB_USERNAME")
 	password = os.Getenv("GITHUB_PASSWORD")
+	gitName  = os.Getenv("GIT_USER")
+	gitEmail = os.Getenv("GIT_EMAIL")
+
+	if len(gitName) < 1 {
+		gitName = username
+	}
+
+	if len(gitEmail) < 1 {
+		gitEmail = fmt.Sprintf("%s@users.noreply.github.com", gitName)
+	}
+}
+
+func GetName() string {
+	return gitName
+}
+
+func GetEmail() string {
+	return gitEmail
 }
 
 func GenerateCloneURL(repositoryFullName string) string {
@@ -184,6 +204,21 @@ func Push(repositoryPath, branch string) error {
 
 	log.Println("git.push.finished:", repositoryPath, branch)
 
+	return nil
+}
+
+func Config(repositoryPath, configKey, configValue string) error {
+	log.Printf("git.config.started: %s=%s\n", configKey, configValue)
+
+	cmd := exec.Command("git", "config", configKey, configValue)
+	cmd.Dir = path.Join(repositoryPath)
+
+	if err := cmd.Run(); err != nil {
+		log.Println("git.config.failed:", err.Error())
+		return err
+	}
+
+	log.Printf("git.config.finished: %s=%s\n", configKey, configValue)
 	return nil
 }
 

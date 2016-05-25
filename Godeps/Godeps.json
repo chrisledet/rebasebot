@@ -1,0 +1,5 @@
+{
+	"ImportPath": "github.com/chrisledet/rebasebot",
+	"GoVersion": "go1.6.2",
+	"Deps": []
+}
