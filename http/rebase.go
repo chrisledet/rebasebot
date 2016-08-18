@@ -10,6 +10,7 @@ import (
 	"net/http"
 	"os"
 	"time"
+	"strings"
 
 	"github.com/chrisledet/rebasebot/github"
 	"github.com/chrisledet/rebasebot/integrations"
@@ -46,7 +47,7 @@ func Rebase(w http.ResponseWriter, r *http.Request) {
 	}
 
 	go func() {
-		if !github.WasMentioned(event.Comment) {
+		if !(strings.Compare(event.Action, "created") == 0 && github.WasMentioned(event.Comment) && strings.Contains(event.Comment.Body,"rebase")) {
 			return
 		}
 
