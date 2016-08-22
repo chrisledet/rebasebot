@@ -3,6 +3,7 @@ package github
 import "fmt"
 
 type Event struct {
+	Action      string     `json:"action"`
 	Issue       Issue      `json:"issue"`
 	PullRequest Issue      `json:"pull_request"`
 	Comment     Comment    `json:"comment"`

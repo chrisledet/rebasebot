@@ -9,6 +9,7 @@ import (
 
 // Ties the git operations together to perform a branch rebase
 func GitRebase(pr *github.PullRequest) error {
+	
 	filepath := git.GetRepositoryFilePath(pr.Head.Repository.FullName)
 	remoteRepositoryURL := git.GenerateCloneURL(pr.Head.Repository.FullName)
 
