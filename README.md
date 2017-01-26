@@ -7,7 +7,7 @@ A GitHub bot that rebases your pull request branches when you ask
 1. Make a dedicated GitHub account for the bot
 2. Grant the GitHub account read and write access to your repositories
 3. [Setup](#setup) the bot on your own server
-4. **@{github bot username} rebase** the bot in a pull request comment
+4. Type a comment "**@{github bot username} rebase**" in a pull request
 5. The bot will then kick off a rebase and push (if rebase successful) to your repository
 6. You can then delete the comment (in step 4) if you want to, including the rebase comment from the bot.
 
